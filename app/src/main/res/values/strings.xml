@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Boussole</string>
+    <string name="buttonP30">ButtonP30</string>
+    <string name="buttonM30">ButtonM30</string>
+    <string name="lattitude">Lattitude</string>
+    <string name="longitude">Longitude</string>
+</resources>

@@ -40,8 +40,9 @@ public class MainActivity extends AppCompatActivity {
     TextView longitude = null;
 
     ImageView Boussole = null;
+    float x, y, z;
 
-  //  SensorManager sensorManager = null;
+    //  SensorManager sensorManager = null;
 
     float rotVal = 0;
 
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private Sensor mAccelerometer = null;
     private Sensor mMagneto = null;
 
+    float[] mGeomagneticValues = new float[3];
+    float[] mAccelValues = new float[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "First onCreate() calls", Toast.LENGTH_SHORT).show();
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagneto =  mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
@@ -130,13 +134,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(mSensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(mAcceleratoreventListener, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(mMagnetoeventListener, mMagneto, SensorManager.SENSOR_DELAY_UI);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(mSensorEventListener, mAccelerometer);
+        mSensorManager.unregisterListener(mAcceleratoreventListener, mAccelerometer);
+        mSensorManager.unregisterListener(mMagnetoeventListener, mMagneto);
+
+
     }
     private class Myobjlistener implements LocationListener
     {
@@ -167,23 +176,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    final SensorEventListener mSensorEventListener = new SensorEventListener() {
+        // listener accelerometre
+    final SensorEventListener mAcceleratoreventListener = new SensorEventListener() {
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             // Que faire en cas de changement de précision ?
         }
 
         public void onSensorChanged(SensorEvent sensorEvent) {
             // Que faire en cas d'évènements sur le capteur ?
-            float x, y, z;
             if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                x = sensorEvent.values[0];
-                y = sensorEvent.values[1];
-                z = sensorEvent.values[2];
+                System.arraycopy(sensorEvent.values, 0, mAccelValues, 0, 3);
 
-                Log.d("Accel", "Rotation sur l'axe x: " + sensorEvent.values[0]);
-                Log.d("Accel", "Rotation sur l'axe y : " + sensorEvent.values[1]);
-                Log.d("Accel", "Rotation sur l'axe z : " + sensorEvent.values[2]);
+
+                Log.d("Accel", "Accel sur l'axe x:  " + mAccelValues[0]);
+                Log.d("Accel", "Accel sur l'axe y : " + mAccelValues[1]);
+                Log.d("Accel", "Accel sur l'axe z : " + mAccelValues[2]);
+            }
+
+        }
+    };
+
+    // listener magnétometre
+    final SensorEventListener mMagnetoeventListener = new SensorEventListener() {
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // Que faire en cas de changement de précision ?
+        }
+
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            // Que faire en cas d'évènements sur le capteur ?
+
+
+            if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+
+                System.arraycopy(sensorEvent.values, 0, mGeomagneticValues, 0, 3);
+                Log.d("Magnet", "Magn sur l'axe x: " +  mGeomagneticValues[0]);
+                Log.d("Magnet", "Magn sur l'axe y : " + mGeomagneticValues[1]);
+                Log.d("Magnet", "Magn sur l'axe z : " + mGeomagneticValues[2]);
             }
         }
     };

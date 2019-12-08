@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     TextView longitude = null;
 
     ImageView Boussole = null;
-    float x, y, z;
+
+
 
     //  SensorManager sensorManager = null;
 
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
     float[] mGeomagneticValues = new float[3];
     float[] mAccelValues = new float[3];
+
+    float[] values = new float[3];
+    float[] rot = new float[9];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.registerListener(mAcceleratoreventListener, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(mMagnetoeventListener, mMagneto, SensorManager.SENSOR_DELAY_UI);
 
+
     }
 
     @Override
@@ -144,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         mSensorManager.unregisterListener(mAcceleratoreventListener, mAccelerometer);
         mSensorManager.unregisterListener(mMagnetoeventListener, mMagneto);
+
 
 
     }
@@ -208,11 +214,19 @@ public class MainActivity extends AppCompatActivity {
 
             if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
-                System.arraycopy(sensorEvent.values, 0, mGeomagneticValues, 0, 3);
+                System.arraycopy(sensorEvent.values, 0,    mGeomagneticValues, 0, 3);
+
+
                 Log.d("Magnet", "Magn sur l'axe x: " +  mGeomagneticValues[0]);
                 Log.d("Magnet", "Magn sur l'axe y : " + mGeomagneticValues[1]);
                 Log.d("Magnet", "Magn sur l'axe z : " + mGeomagneticValues[2]);
             }
+            SensorManager.getRotationMatrix(rot, null, mAccelValues, mGeomagneticValues);
+            SensorManager.getOrientation(rot, values);
+
+            Log.d("Sensors", "Rotation sur l'axe z : " + values[0]);
+            Log.d("Sensors", "Rotation sur l'axe x : " + values[1]);
+            Log.d("Sensors", "Rotation sur l'axe y : " + values[2]);
         }
     };
 

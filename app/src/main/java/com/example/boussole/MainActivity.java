@@ -232,8 +232,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Sensors", "Rotation sur l'axe y : " + values[2]);
             radToDegree = radToDegree +Double.valueOf(Math.toDegrees(values[0]));
             nb_cycle+=1;
-            if (nb_cycle == 10) {
+            if (nb_cycle == 7) {
                 rotVal = Boussole.getRotation();
+                radToDegree=radToDegree+45;
                 Boussole.setRotation((float) radToDegree/nb_cycle);
                 nb_cycle=0;
                 radToDegree=0;

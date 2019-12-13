@@ -29,6 +29,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
     TextView longitude = null;
 
     ImageView Boussole = null;
-
+    int nb_cycle = 0;
 
 
     //  SensorManager sensorManager = null;
 
     float rotVal = 0;
+    double radToDegree=0;
 
     private LocationManager objgps = null;
     private LocationListener objlistener = null;
@@ -227,7 +230,16 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Sensors", "Rotation sur l'axe z : " + values[0]);
             Log.d("Sensors", "Rotation sur l'axe x : " + values[1]);
             Log.d("Sensors", "Rotation sur l'axe y : " + values[2]);
+            radToDegree = radToDegree +Double.valueOf(Math.toDegrees(values[0]));
+            nb_cycle+=1;
+            if (nb_cycle == 10) {
+                rotVal = Boussole.getRotation();
+                Boussole.setRotation((float) radToDegree/nb_cycle);
+                nb_cycle=0;
+                radToDegree=0;
+            }
         }
+
     };
 
 }
